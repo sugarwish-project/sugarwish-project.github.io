@@ -213,7 +213,7 @@ section {
   height: 50px;
   width: 50px;
   text-align: center;
-  background: #fce4ec;
+  background: #cadaf2;
   display: grid;
   place-items: center;
   border-radius: 50%;
@@ -221,7 +221,7 @@ section {
 
 .fitur-item .icon i {
   font-size: 2rem;
-  color: #c74365;
+  color: #0167fa;
 }
 
 .fitur-item h3 {
