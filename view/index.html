@@ -1,1 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light only" />
+    <link rel="shortcut icon" href="../asset/logo.svg?v=1793883372" />
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css" />
+    <link rel="stylesheet" href="../asset/styles.css?v=1793883372" />
+    <title>i - Gifty Creative</title>
+    <style>
+        :root {
+            color-scheme: light;
+        }
+        iframe {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <header style="height: 60px !important">
+        <a href="../" class="btn-back" style="color: var(--font-color); font-size: 1.2rem; font-weight: 500; cursor: pointer">
+            <i class="bx bx-left-arrow-alt" style="vertical-align: middle; line-height: 1.2rem; font-size: 2rem"></i> Kembali
+        </a>
+        <a class="btn-border" href="javascript:void(0);" onclick="showPopupOrder()" style="padding: 7px 10px">
+            <i class="bx bxl-instagram"></i> Pesan Sekarang
+        </a>
+    </header>
 
+    <div class="popup-container">
+        <div class="card">
+            <div class="bx bx-x" id="close-icon"></div>
+            <p class="text"><b>Terima kasih udah mau pesan 💖</b><br />Untuk pemesanan lanjut, kamu bisa DM Instagram kami ya</p>
+            <a class="btn-order" href="https://instagram.com/gifty.creative" target="_blank">
+                <i class="bx bxl-instagram"></i> Instagram - gifty.creative
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const popupContainer = document.querySelector(".popup-container");
+        const btnClosePopup = document.querySelector("#close-icon");
+
+        function showPopupOrder() {
+            popupContainer.classList.add("show");
+        }
+
+        function closePopupOrder() {
+            popupContainer.classList.remove("show");
+        }
+
+        btnClosePopup.onclick = closePopupOrder;
+    </script>
+
+    <div style="position: fixed; top: 60px; left: 0; right: 0; bottom: 0; padding: 0 !important">
+        <iframe id="content-frame"></iframe>
+    </div>
+
+    <script>
+        // Ambil parameter `themes` dari URL secara dinamis dan tunggal
+        const urlParams = new URLSearchParams(window.location.search);
+        const themeName = urlParams.get('themes');
+        const iframeElement = document.getElementById('content-frame');
+
+        if (themeName) {
+            // Sesuaikan jalur folder themes Anda (misal: ../themes/ atau ../theme/)
+            iframeElement.src = `../themes/${themeName}/?v=1793883372`;
+        } else {
+            iframeElement.srcdoc = "<body><div style='text-align:center; padding:50px; font-family:sans-serif;'><h3>Tema tidak ditemukan</h3></div></body>";
+        }
+    </script>
+</body>
+</html>
