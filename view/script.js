@@ -18,3 +18,12 @@ function goBack() {
         window.location.href = "../";
     }
 }
+
+document.addEventListener('click', function () {
+    // Cek apakah halaman sedang tidak dalam mode fullscreen
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch((err) => {
+            console.error(`Gagal mengaktifkan mode layar penuh: ${err.message}`);
+        });
+    }
+});
