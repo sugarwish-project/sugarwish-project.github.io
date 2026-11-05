@@ -4,9 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light only" />
-    <link rel="shortcut icon" href="../asset/logo.svg?v=1793883372" />
+    <link rel="shortcut icon" href="../asset/logo.svg" />
     <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css" />
-    <link rel="stylesheet" href="../asset/styles.css?v=1793883372" />
+    <link rel="stylesheet" href="../asset/styles.css" />
     <title>i - Gifty Creative</title>
     <style>
         :root {
@@ -59,18 +59,6 @@
         <iframe id="content-frame"></iframe>
     </div>
 
-    <script>
-        // Ambil parameter `themes` dari URL secara dinamis dan tunggal
-        const urlParams = new URLSearchParams(window.location.search);
-        const themeName = urlParams.get('themes');
-        const iframeElement = document.getElementById('content-frame');
-
-        if (themeName) {
-            // Sesuaikan jalur folder themes Anda (misal: ../themes/ atau ../theme/)
-            iframeElement.src = `../themes/${themeName}/?v=1793883372`;
-        } else {
-            iframeElement.srcdoc = "<body><div style='text-align:center; padding:50px; font-family:sans-serif;'><h3>Tema tidak ditemukan</h3></div></body>";
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
