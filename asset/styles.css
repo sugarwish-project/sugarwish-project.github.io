@@ -248,13 +248,15 @@ section {
   text-align: center;
 }
 
-.theme-item {
+..theme-item {
   padding: 1rem;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
   border-radius: 1rem;
   transition: 0.1s ease all;
   display: flex;
   flex-direction: column;
+  justify-content: space-between; /* Membuat isi dalam card terdistribusi dari atas ke bawah */
+  height: 100%; /* Memastikan semua card memiliki tinggi yang sama per baris grid */
 }
 
 .theme-item img {
@@ -270,31 +272,35 @@ section {
 .theme-item .bottom {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  gap: 5px;
+  justify-content: flex-end; /* Memastikan tombol selalu terdorong ke bawah */
+  flex-grow: 1; /* Mengisi sisa ruang kosong agar tombol rata di bawah */
+  gap: 8px;
+  margin-top: auto; /* Mendorong bagian bawah agar konsisten */
 }
 
 .theme-item .name {
   display: flex;
   width: 100%;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start; /* Mengatur posisi teks jika melompat ke baris kedua */
+  gap: 10px;
 }
 
 .theme-item h4 {
   font-size: 1.2rem;
   color: var(--font-color);
-  margin: 0.75rem 0;
+  margin: 0.5rem 0;
   letter-spacing: 1px;
   flex-grow: 1;
-  line-height: 1.2rem;
+  line-height: 1.3rem;
   text-align: start;
 }
+
 .theme-item span {
   font-size: 1.1rem;
   letter-spacing: 1px;
   font-weight: 500;
+  white-space: nowrap; /* Mencegah harga terpotong atau turun ke baris baru */
 }
 
 .cta {
