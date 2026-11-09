@@ -17,16 +17,19 @@ window.onscroll = () => {
   navlist.classList.remove("open");
 };
 
-/* --- LOGIKA RENDER TEMA & PAGINATION DARI JSON --- */
+/* --- LOGIKA RENDER TEMA, SKELETON, & PAGINATION DARI JSON --- */
 document.addEventListener("DOMContentLoaded", function () {
     const themeContainer = document.getElementById("theme-list");
     const paginationContainer = document.getElementById("pagination");
 
     let themesData = [];
-    const itemsPerPage = 6; // Mengatur jumlah tema per halaman (6 item)
+    const itemsPerPage = 6; // Jumlah item per halaman
     let currentPage = 1;
 
-    // Mengambil data dari file themes.json
+    // 1. Tampilkan efek skeleton loading saat halaman pertama kali dimuat
+    showSkeletonLoading(itemsPerPage);
+
+    // 2. Ambil data dari file themes.json
     fetch("themes.json")
         .then(response => response.json())
         .then(data => {
@@ -34,7 +37,30 @@ document.addEventListener("DOMContentLoaded", function () {
             displayThemes(currentPage);
             setupPagination();
         })
-        .catch(error => console.error("Gagal memuat data tema:", error));
+        .catch(error => {
+            console.error("Gagal memuat data tema:", error);
+            if (themeContainer) {
+                themeContainer.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: red;'>Gagal memuat daftar tema.</p>";
+            }
+        });
+
+    // Fungsi untuk menampilkan kotak-kotak skeleton sementara memuat data
+    function showSkeletonLoading(count) {
+        if (!themeContainer) return;
+        let skeletonHTML = "";
+        for (let i = 0; i < count; i++) {
+            skeletonHTML += `
+                <div class="theme-item skeleton">
+                    <img>
+                    <div class="bottom" style="width: 100%;">
+                        <div class="skeleton-line long"></div>
+                        <div class="skeleton-line short"></div>
+                    </div>
+                </div>
+            `;
+        }
+        themeContainer.innerHTML = skeletonHTML;
+    }
 
     // Fungsi untuk menampilkan tema sesuai halaman yang aktif
     function displayThemes(page) {
@@ -81,7 +107,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
             btn.addEventListener("click", function () {
                 currentPage = i;
-                displayThemes(currentPage);
+                
+                // Tampilkan skeleton singkat saat pindah halaman agar terasa dinamis
+                showSkeletonLoading(itemsPerPage);
+                
+                // Beri sedikit jeda agar animasi skeleton terlihat smooth saat klik halaman
+                setTimeout(() => {
+                    displayThemes(currentPage);
+                }, 200);
 
                 let currentActive = paginationContainer.querySelector(".active");
                 if (currentActive) {
@@ -89,7 +122,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
                 btn.classList.add("active");
 
-                // Scroll otomatis secara halus ke bagian tema saat pindah halaman
+                // Scroll otomatis secara halus ke bagian tema
                 document.getElementById("theme").scrollIntoView({ behavior: "smooth" });
             });
 
