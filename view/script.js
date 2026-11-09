@@ -18,3 +18,19 @@ function goBack() {
         window.location.href = "../";
     }
 }
+
+    <!-- Script Pemicu Fullscreen -->
+    <script>
+      const notifBar = document.getElementById('notifBar');
+
+      notifBar.addEventListener('click', function() {
+        const elem = document.documentElement;
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) {
+          elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) {
+          elem.msRequestFullscreen();
+        }
+      });
+    </script>
