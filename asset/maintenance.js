@@ -1,6 +1,5 @@
 document.addEventListener('contextmenu', function(e) {
     e.preventDefault();
-    alert("Silahkan pilih tema kesekaan anda!.");
 });
 
 document.addEventListener('keydown', function(e) {
