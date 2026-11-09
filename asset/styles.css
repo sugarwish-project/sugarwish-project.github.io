@@ -389,7 +389,51 @@ section {
     gap: 0.1rem;
   }
 
-  /* KHUSUS HP: Tema berjajar 2 kolom & elemen di dalamnya disesuaikan agar rapi */
+  section {
+    padding: 40px 5% 30px !important;
+  }
+
+  .middle-text h2 {
+    font-size: 1.5rem !important;
+  }
+  .middle-text p {
+    font-size: 0.95rem !important;
+  }
+
+  .fitur-content {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+    padding: 20px 0 40px !important;
+  }
+
+  .fitur-item {
+    padding: 1.2rem !important;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    border-radius: 0.8rem;
+  }
+
+  .fitur-item .icon {
+    min-width: 45px;
+    height: 45px;
+    margin-top: 2px;
+  }
+
+  .fitur-item .icon i {
+    font-size: 1.5rem !important;
+  }
+
+  .fitur-item h3 {
+    font-size: 1.1rem !important;
+    margin: 0 0 4px 0 !important;
+  }
+
+  .fitur-item p {
+    font-size: 0.9rem !important;
+    line-height: 1.4;
+  }
+
   .theme-content {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 8px !important;
