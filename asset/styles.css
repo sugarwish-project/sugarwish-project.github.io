@@ -11,6 +11,13 @@
   scroll-padding-top: 3rem;
 }
 
+body {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 :root {
   --main-color: #0167fa;
   --text-color: #fff;
