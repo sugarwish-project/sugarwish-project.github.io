@@ -388,6 +388,39 @@ section {
     min-height: 100vh;
     gap: 0.1rem;
   }
+
+  /* KHUSUS HP: Tema berjajar 2 kolom & elemen di dalamnya disesuaikan agar rapi */
+  .theme-content {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+    padding: 15px 0 30px !important;
+  }
+
+  .theme-item {
+    padding: 0.6rem !important;
+  }
+
+  .theme-item .name {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 2px !important;
+  }
+
+  .theme-item h4 {
+    font-size: 0.95rem !important;
+    margin: 0.4rem 0 0.2rem !important;
+    line-height: 1.1rem !important;
+  }
+
+  .theme-item span {
+    font-size: 0.9rem !important;
+  }
+
+  .s-btn {
+    padding: 7px 10px !important;
+    font-size: 0.85rem !important;
+    letter-spacing: 0.5px !important;
+  }
 }
 
 footer {
