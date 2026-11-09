@@ -503,3 +503,33 @@ footer {
   z-index: 10001;
   cursor: pointer;
 }
+
+/* Pagination Styling */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 30px;
+}
+
+.pagination button {
+  padding: 8px 14px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  cursor: pointer;
+  border-radius: 4px;
+  font-weight: bold;
+  font-family: "Poppins", sans-serif;
+  color: var(--font-color);
+  transition: all 0.3s ease;
+}
+
+.pagination button.active {
+  background-color: var(--main-color);
+  color: #fff;
+  border-color: var(--main-color);
+}
+
+.pagination button:hover:not(.active) {
+  background-color: #f1f1f1;
+}
