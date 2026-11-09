@@ -130,3 +130,36 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 });
+
+
+// 1. Mencegah Klik Kanan
+document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+});
+
+// 2. Mencegah Shortcut Keyboard (Ctrl+C, Ctrl+U, F12, dll)
+document.addEventListener('keydown', function(e) {
+    // Mencegah F12 (Inspect Element)
+    if (e.key === 'F12') {
+        e.preventDefault();
+        return false;
+    }
+    
+    // Mencegah Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C
+    if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) {
+        e.preventDefault();
+        return false;
+    }
+    
+    // Mencegah Ctrl+U (View Source)
+    if (e.ctrlKey && e.key === 'u') {
+        e.preventDefault();
+        return false;
+    }
+
+    // Mencegah Ctrl+C (Copy), Ctrl+X (Cut), Ctrl+A (Select All)
+    if (e.ctrlKey && (e.key === 'c' || e.key === 'x' || e.key === 'a')) {
+        e.preventDefault();
+        return false;
+    }
+});
