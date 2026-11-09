@@ -248,15 +248,15 @@ section {
   text-align: center;
 }
 
-..theme-item {
+.theme-item {
   padding: 1rem;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
   border-radius: 1rem;
   transition: 0.1s ease all;
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* Membuat isi dalam card terdistribusi dari atas ke bawah */
-  height: 100%; /* Memastikan semua card memiliki tinggi yang sama per baris grid */
+  justify-content: space-between;
+  height: 100%;
 }
 
 .theme-item img {
@@ -272,17 +272,17 @@ section {
 .theme-item .bottom {
   display: flex;
   flex-direction: column;
-  justify-content: flex-end; /* Memastikan tombol selalu terdorong ke bawah */
-  flex-grow: 1; /* Mengisi sisa ruang kosong agar tombol rata di bawah */
+  justify-content: flex-end;
+  flex-grow: 1;
   gap: 8px;
-  margin-top: auto; /* Mendorong bagian bawah agar konsisten */
+  margin-top: auto;
 }
 
 .theme-item .name {
   display: flex;
   width: 100%;
   justify-content: space-between;
-  align-items: flex-start; /* Mengatur posisi teks jika melompat ke baris kedua */
+  align-items: flex-start;
   gap: 10px;
 }
 
@@ -295,12 +295,11 @@ section {
   line-height: 1.3rem;
   text-align: start;
 }
-
 .theme-item span {
   font-size: 1.1rem;
   letter-spacing: 1px;
   font-weight: 500;
-  white-space: nowrap; /* Mencegah harga terpotong atau turun ke baris baru */
+  white-space: nowrap;
 }
 
 .cta {
@@ -644,7 +643,7 @@ footer {
 
 .theme-item.skeleton img {
   width: 100%;
-  height: 200px; /* Sesuaikan perkiraan tinggi poster */
+  height: 200px;
   background: #e0e0e0;
   animation: skeleton-pulse 1.5s infinite ease-in-out;
   border-radius: 0.5rem;
