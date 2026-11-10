@@ -3,7 +3,7 @@
     "name": "A Sweet Love Story",
     "price": "Rp50.000",
     "image": "asset/poster/a sweet love story.webp",
-    "link": "/view/?themes=SG002&name=A-Litle-Love-Letter"
+    "link": "/view/?temaku=SG002&name=A-Litle-Love-Letter"
   },
   {
     "name": "Starlit Garden",
@@ -27,7 +27,7 @@
     "name": "Mail Wish",
     "price": "Rp35.000",
     "image": "https://giftycreative.com/poster/mail-wish.webp",
-    "link": "view/?themes=SG001"
+    "link": "view/?temaku=SG001"
   },
   {
     "name": "Blush Dream",
