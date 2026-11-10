@@ -2,38 +2,187 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Generator WebP Gratis</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batch Image to WebP Converter</title>
+    <!-- Library untuk membuat ZIP dan mengunduh file secara stabil -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <style>
-        body { font-family: sans-serif; text-align: center; padding: 50px; background: #f4f4f9; }
-        .box { border: 2px dashed #ccc; padding: 30px; background: white; max-width: 400px; margin: 0 auto; border-radius: 8px; }
-        #downloadBtn { display: none; margin-top: 20px; padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .custom-file-upload {
+            border: 2px dashed #4CAF50;
+            display: inline-block;
+            padding: 15px 25px;
+            cursor: pointer;
+            border-radius: 8px;
+            background-color: #f9fff9;
+            color: #4CAF50;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .custom-file-upload:hover {
+            background-color: #4CAF50;
+            color: white;
+        }
+        button {
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            margin-top: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+            transition: background 0.3s ease;
+        }
+        button:hover {
+            background-color: #005f7f;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        #status {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #444;
+            text-align: left;
+            max-height: 180px;
+            overflow-y: auto;
+            background: #f1f1f1;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
     </style>
 </head>
 <body>
 
-    <h2>Generator Gambar ke WebP</h2>
-    <div class="box">
-        <input type="file" id="uploadInput" accept="image/*"><br><br>
-        <label for="quality">Kualitas (0.1 - 1.0):</label>
-        <input type="number" id="quality" value="0.8" min="0.1" max="1.0" step="0.1" style="width: 50px;">
-        <br>
-        <a id="downloadBtn">Unduh WebP</a>
-    </div>
+<div class="container">
+    <h2>Konverter Gambar ke WebP</h2>
+    <p>Pilih banyak gambar sekaligus. Seluruh hasil konversi akan diunduh aman dalam bentuk file ZIP dengan nama asli yang dipertahankan.</p>
+    
+    <label for="imageInput" class="custom-file-upload">
+        📁 Pilih Gambar (Bisa Banyak)
+    </label>
+    <input type="file" id="imageInput" accept="image/*" multiple>
+    
+    <div id="fileInfo" style="margin-top: 10px; font-weight: bold; color: #555;"></div>
+    
+    <button id="convertBtn" onclick="convertToWebP()" disabled>Konversi & Download (.zip)</button>
+    
+    <div id="status">Status proses akan tampil di sini...</div>
+</div>
 
-    <script>
-        const uploadInput = document.getElementById('uploadInput');
-        const qualityInput = document.getElementById('quality');
-        const downloadBtn = document.getElementById('downloadBtn');
+<script>
+    const imageInput = document.getElementById('imageInput');
+    const fileInfo = document.getElementById('fileInfo');
+    const convertBtn = document.getElementById('convertBtn');
+    const statusDiv = document.getElementById('status');
 
-        uploadInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
+    let selectedFiles = [];
 
+    imageInput.addEventListener('change', (event) => {
+        selectedFiles = Array.from(event.target.files);
+        if (selectedFiles.length > 0) {
+            fileInfo.innerText = `${selectedFiles.length} file dipilih.`;
+            convertBtn.disabled = false;
+            statusDiv.innerHTML = "Siap untuk mengonversi.";
+        } else {
+            fileInfo.innerText = "";
+            convertBtn.disabled = true;
+        }
+    });
+
+    async function convertToWebP() {
+        if (selectedFiles.length === 0) return;
+
+        convertBtn.disabled = true;
+        statusDiv.innerHTML = "🚀 Memulai proses konversi...<br>";
+
+        const zip = new JSZip();
+        let successCount = 0;
+
+        for (let i = 0; i < selectedFiles.length; i++) {
+            const file = selectedFiles[i];
+            
+            try {
+                // Memproses konversi per gambar
+                const blob = await processImage(file);
+                
+                // Ambil nama file asli tanpa ekstensi lama
+                const originalName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+                const newFileName = `${originalName}.webp`;
+
+                // Masukkan file ke dalam ZIP
+                zip.file(newFileName, blob);
+                
+                successCount++;
+                statusDiv.innerHTML += `✅ Dikonversi (${i + 1}/${selectedFiles.length}): ${newFileName}<br>`;
+                statusDiv.scrollTop = statusDiv.scrollHeight;
+            } catch (error) {
+                statusDiv.innerHTML += `❌ Gagal: ${file.name} (${error})<br>`;
+            }
+        }
+
+        if (successCount > 0) {
+            statusDiv.innerHTML += "<br>📦 Mengemas seluruh gambar ke file ZIP...";
+            // Generate zip dan trigger unduhan tunggal
+            zip.generateAsync({ type: "blob" }).then(function (content) {
+                saveAs(content, "hasil_converted_webp.zip");
+                statusDiv.innerHTML += "<br>✨ Selesai! File ZIP berhasil diunduh.";
+                convertBtn.disabled = false;
+            });
+        } else {
+            statusDiv.innerHTML += "<br>⚠️ Tidak ada gambar yang berhasil dikonversi.";
+            convertBtn.disabled = false;
+        }
+    }
+
+    function processImage(file) {
+        return new Promise((resolve, reject) => {
             const reader = new FileReader();
+            reader.readAsDataURL(file);
+            
             reader.onload = function(event) {
                 const img = new Image();
+                img.src = event.target.result;
+                
                 img.onload = function() {
-                    // Membuat canvas untuk memproses gambar
                     const canvas = document.createElement('canvas');
                     canvas.width = img.width;
                     canvas.height = img.height;
@@ -41,20 +190,27 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0);
                     
-                    // Mengonversi ke WebP
-                    const quality = parseFloat(qualityInput.value) || 0.8;
-                    const webpDataUrl = canvas.toDataURL('image/webp', quality);
-                    
-                    // Menyiapkan tombol unduh
-                    downloadBtn.href = webpDataUrl;
-                    downloadBtn.download = file.name.substring(0, file.name.lastIndexOf('.')) + '.webp';
-                    downloadBtn.style.display = 'inline-block';
-                    downloadBtn.innerText = 'Unduh ' + downloadBtn.download;
+                    // Konversi ke format webp dengan kualitas 80% (0.8)
+                    canvas.toBlob((blob) => {
+                        if (blob) {
+                            resolve(blob);
+                        } else {
+                            reject('Gagal mengonversi ke Blob WebP');
+                        }
+                    }, 'image/webp', 0.8);
                 };
-                img.src = event.target.result;
+                
+                img.onerror = function() {
+                    reject('Format file rusak/tidak didukung');
+                };
             };
-            reader.readAsDataURL(file);
+            
+            reader.onerror = function() {
+                reject('Gagal membaca file lokal');
+            };
         });
-    </script>
+    }
+</script>
+
 </body>
 </html>
