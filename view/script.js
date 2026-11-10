@@ -1,13 +1,26 @@
-// Ambil parameter `themes` dari URL secara dinamis dan tunggal
+// Ambil parameter `themes` dari URL secara dinamis
 const urlParams = new URLSearchParams(window.location.search);
-const themeName = urlParams.get('themes');
+const themeName = urlParams.get('temaku');
 const iframeElement = document.getElementById('content-frame');
 
-if (themeName) {
-    // Jalur folder themes tanpa versi tambahan
-    iframeElement.src = `../themes/${themeName}/`;
+// 1. Cek apakah parameter `themes` kosong
+if (!themeName) {
+    window.location.href = "../404.html"; // Lempar ke 404.html jika parameter themes tidak ada
 } else {
-    iframeElement.srcdoc = "<body><div style='text-align:center; padding:50px; font-family:sans-serif;'><h3>Tema tidak ditemukan</h3></div></body>";
+    // 2. Cek apakah folder tema tersebut benar-benar ada di dalam folder /themes/
+    fetch(`../themes/${themeName}/index.html`, { method: 'HEAD' })
+        .then(response => {
+            if (!response.ok) {
+                // Jika folder/file tema tidak ada (misalnya salah ketik jadi SG002a), lempar ke 404
+                window.location.href = "../404.html";
+            } else {
+                // Jika valid dan ada, muat iframe tema seperti biasa
+                iframeElement.src = `../themes/${themeName}/`;
+            }
+        })
+        .catch(() => {
+            window.location.href = "../404.html";
+        });
 }
 
 // Fungsi kembali ke halaman sebelumnya dengan mempertahankan posisi/riwayat
