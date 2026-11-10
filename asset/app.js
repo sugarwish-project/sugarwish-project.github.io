@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Fungsi untuk menampilkan tema sesuai halaman yang aktif
-    function displayThemes(page) {
+function displayThemes(page) {
         if (!themeContainer) return;
         themeContainer.innerHTML = "";
         
@@ -75,7 +75,9 @@ document.addEventListener("DOMContentLoaded", function () {
         paginatedItems.forEach(theme => {
             output += `
                 <div class="theme-item">
-                    <img src="${theme.image}" alt="${theme.name}" />
+                    <a href="${theme.image}" class="glightbox" data-gallery="theme-gallery" data-title="${theme.name}">
+                        <img src="${theme.image}" alt="${theme.name}" />
+                    </a>
                     <div class="bottom">
                         <div class="name">
                             <h4>${theme.name}</h4>
@@ -87,8 +89,16 @@ document.addEventListener("DOMContentLoaded", function () {
             `;
         });
         themeContainer.innerHTML = output;
-    }
 
+        // Inisialisasi ulang GLightbox setiap kali tema selesai dirender
+        GLightbox({
+            selector: '.glightbox',
+            touchNavigation: true,
+            loop: true,
+            zoomable: true
+        });
+    }
+  
     // Fungsi untuk membuat tombol nomor halaman secara otomatis
     function setupPagination() {
         if (!paginationContainer) return;
