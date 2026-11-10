@@ -1,12 +1,11 @@
-// Ambil parameter `themes` dan `name` dari URL secara dinamis
+// Ambil parameter `themes` dari URL secara dinamis
 const urlParams = new URLSearchParams(window.location.search);
-const themeName = urlParams.get('themes');
-const recipientName = urlParams.get('name');
+const themeName = urlParams.get('temaku');
 const iframeElement = document.getElementById('content-frame');
 
-// 1. Cek apakah parameter `themes` atau `name` kosong/tidak lengkap
-if (!themeName || !recipientName) {
-    window.location.href = "../404.html"; // Lempar ke 404.html jika parameter kurang
+// 1. Cek apakah parameter `themes` kosong
+if (!themeName) {
+    window.location.href = "../404.html"; // Lempar ke 404.html jika parameter themes tidak ada
 } else {
     // 2. Cek apakah folder tema tersebut benar-benar ada di dalam folder /themes/
     fetch(`../themes/${themeName}/index.html`, { method: 'HEAD' })
