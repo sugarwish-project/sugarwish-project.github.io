@@ -3,7 +3,7 @@
     "name": "A Sweet Love Story",
     "price": "Rp50.000",
     "image": "asset/poster/a sweet love story.webp",
-    "link": "/view/?temaku=SG002&name=A-Litle-Love-Letter"
+    "link": "/view/?temaku=a sweet love story"
   },
   {
     "name": "Starlit Garden",
@@ -27,13 +27,13 @@
     "name": "Mail Wish",
     "price": "Rp35.000",
     "image": "https://giftycreative.com/poster/mail-wish.webp",
-    "link": "view/?temaku=SG001"
+    "link": "view/?temaku=mail wish"
   },
   {
-    "name": "Blush Dream",
+    "name": "Levender Wish",
     "price": "Rp35.000",
     "image": "https://giftycreative.com/poster/blush-dream.webp",
-    "link": "https://giftycreative.com/view/?tema=blush-dream"
+    "link": "/view/?temaku=levender wish"
   },
   {
     "name": "Brown Note",
@@ -84,10 +84,10 @@
     "link": "https://giftycreative.com/view/?tema=sweet-note"
   },
   {
-    "name": "Floral Popup",
+    "name": "Floral Whispers",
     "price": "Rp45.000",
     "image": "https://giftycreative.com/poster/floral-popup.webp",
-    "link": "https://giftycreative.com/view/?tema=floral-popup"
+    "link": "/view/?temaku=floral whispers"
   },
   {
     "name": "Notebook",
