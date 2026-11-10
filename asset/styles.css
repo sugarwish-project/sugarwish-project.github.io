@@ -103,6 +103,7 @@ section {
   padding: 70px 10% 60px;
 }
 
+/* Home Section Layout */
 .home {
   position: relative;
   min-height: 100vh;
@@ -110,7 +111,7 @@ section {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   align-items: center;
-  grid-area: 2rem;
+  gap: 2rem;
 }
 
 .home-img img {
@@ -378,31 +379,43 @@ section {
     display: flex;
   }
 
+  /* Perbaikan Tampilan Home di HP agar Sejajar & Rapi */
   .home {
     grid-template-columns: 1fr;
-    min-height: 118vh;
+    min-height: auto;
+    text-align: center;
+    justify-items: center;
+    padding-top: 80px;
   }
 
   .home-text {
-    padding-top: 60px;
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .home-img {
     text-align: center;
+    width: 100%;
+    display: flex;
+    justify-content: center;
   }
+
   .home-img img {
-    max-width: 700px;
+    max-width: 75%;
+    height: auto;
   }
 }
 
 @media (max-width: 475px) {
   :root {
-    --big-font: 2.5rem;
+    --big-font: 2.2rem;
     --h2-font: 1.8rem;
   }
   .home {
-    min-height: 100vh;
-    gap: 0.1rem;
+    min-height: auto;
+    gap: 1rem;
   }
 
   section {
