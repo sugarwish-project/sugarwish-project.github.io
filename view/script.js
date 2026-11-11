@@ -31,3 +31,17 @@ function goBack() {
         window.location.href = "../";
     }
 }
+
+// Script untuk menangani dinamis Title & Canonical
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            let namaTema = urlParams.get('temaku');
+
+            if (namaTema) {
+                namaTema = decodeURIComponent(namaTema);
+                document.getElementById('page-title').innerText = `SugarWish - ${namaTema}`;
+            }
+
+            // Set URL Canonical secara otomatis sesuai halaman yang sedang dibuka
+            document.getElementById('canonical-url').setAttribute('href', window.location.href);
+        });
