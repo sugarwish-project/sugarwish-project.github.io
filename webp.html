@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Batch Image to WebP Converter</title>
+    <title>Batch Image to WebP Converter with Custom Name</title>
     <!-- Library untuk membuat ZIP dan mengunduh file secara stabil -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
@@ -24,7 +24,7 @@
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 500px;
+            max-width: 650px;
             text-align: center;
         }
         h2 {
@@ -51,10 +51,21 @@
             transition: all 0.3s ease;
             width: 100%;
             box-sizing: border-box;
+            margin-bottom: 10px;
         }
         .custom-file-upload:hover {
             background-color: #4CAF50;
             color: white;
+        }
+        .paste-zone {
+            border: 2px dashed #008CBA;
+            padding: 15px 25px;
+            border-radius: 8px;
+            background-color: #f0f8ff;
+            color: #008CBA;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 15px;
         }
         button {
             background-color: #008CBA;
@@ -76,12 +87,75 @@
             background-color: #cccccc;
             cursor: not-allowed;
         }
-        #status {
+        #previewContainer {
             margin-top: 20px;
+            max-height: 250px;
+            overflow-y: auto;
+            text-align: left;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            background: #fafafa;
+        }
+        .preview-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fff;
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            border: 1px solid #eee;
+            gap: 10px;
+        }
+        .preview-item img {
+            width: 45px;
+            height: 45px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        .preview-info {
+            flex-grow: 1;
+            font-size: 13px;
+            color: #333;
+            overflow: hidden;
+        }
+        .name-input {
+            width: 100%;
+            max-width: 200px;
+            padding: 4px 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-bottom: 4px;
+            box-sizing: border-box;
+        }
+        .preview-size {
+            font-size: 12px;
+            color: #666;
+            white-space: nowrap;
+        }
+        .btn-remove {
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            width: auto;
+            margin: 0;
+        }
+        .btn-remove:hover {
+            background: #cc0000;
+        }
+        #status {
+            margin-top: 15px;
             font-size: 14px;
             color: #444;
             text-align: left;
-            max-height: 180px;
+            max-height: 150px;
             overflow-y: auto;
             background: #f1f1f1;
             padding: 10px;
@@ -94,16 +168,28 @@
 
 <div class="container">
     <h2>Konverter Gambar ke WebP</h2>
-    <p>Pilih banyak gambar sekaligus. Seluruh hasil konversi akan diunduh aman dalam bentuk file ZIP dengan nama asli yang dipertahankan.</p>
+    <p>Pilih file atau <b>tekan Ctrl+V</b> untuk menempelkan gambar dari web/clipboard.</p>
     
+    <!-- Opsi 1: Upload File -->
     <label for="imageInput" class="custom-file-upload">
         📁 Pilih Gambar (Bisa Banyak)
     </label>
     <input type="file" id="imageInput" accept="image/*" multiple>
+
+    <!-- Opsi 2: Zona Tempel/Paste -->
+    <div class="paste-zone">
+        📋 Atau langsung tekan <b>Ctrl + V</b> di halaman ini untuk paste gambar
+    </div>
     
-    <div id="fileInfo" style="margin-top: 10px; font-weight: bold; color: #555;"></div>
+    <div id="fileInfo" style="font-weight: bold; color: #555; font-size: 14px;"></div>
+
+    <!-- Area Daftar Preview Gambar -->
+    <div id="previewContainer" style="display: none;">
+        <div style="font-weight: bold; margin-bottom: 8px; font-size: 13px; color: #444;">Daftar Gambar Terpilih:</div>
+        <div id="previewList"></div>
+    </div>
     
-    <button id="convertBtn" onclick="convertToWebP()" disabled>Konversi & Download (.zip)</button>
+    <button id="convertBtn" onclick="convertToWebP()" disabled>Konversi & Download</button>
     
     <div id="status">Status proses akan tampil di sini...</div>
 </div>
@@ -113,20 +199,101 @@
     const fileInfo = document.getElementById('fileInfo');
     const convertBtn = document.getElementById('convertBtn');
     const statusDiv = document.getElementById('status');
+    const previewContainer = document.getElementById('previewContainer');
+    const previewList = document.getElementById('previewList');
 
     let selectedFiles = [];
+    let pastedCounter = 1;
 
     imageInput.addEventListener('change', (event) => {
-        selectedFiles = Array.from(event.target.files);
+        const files = Array.from(event.target.files).map(file => {
+            const originalName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+            return { file, customName: originalName };
+        });
+        addFilesToQueue(files);
+        imageInput.value = '';
+    });
+
+    window.addEventListener('paste', (event) => {
+        const items = event.clipboardData || event.originalEvent.clipboardData;
+        if (!items) return;
+
+        const pastedFiles = [];
+        for (let item of items.items) {
+            if (item.type.indexOf('image') !== -1) {
+                const blob = item.getAsFile();
+                if (blob) {
+                    const ext = item.type.split('/')[1] || 'png';
+                    const defaultName = `pasted_image_${pastedCounter++}`;
+                    const newFile = new File([blob], `${defaultName}.${ext}`, { type: item.type });
+                    pastedFiles.push({ file: newFile, customName: defaultName });
+                }
+            }
+        }
+
+        if (pastedFiles.length > 0) {
+            addFilesToQueue(pastedFiles);
+            statusDiv.innerHTML = `📋 Berhasil menempelkan ${pastedFiles.length} gambar dari clipboard.<br>` + statusDiv.innerHTML;
+        }
+    });
+
+    function addFilesToQueue(newFiles) {
+        selectedFiles = selectedFiles.concat(newFiles);
+        updateUI();
+    }
+
+    function removeFile(index) {
+        selectedFiles.splice(index, 1);
+        updateUI();
+    }
+
+    function updateCustomName(index, newName) {
+        selectedFiles[index].customName = newName.trim();
+    }
+
+    function formatBytes(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    function updateUI() {
         if (selectedFiles.length > 0) {
             fileInfo.innerText = `${selectedFiles.length} file dipilih.`;
             convertBtn.disabled = false;
-            statusDiv.innerHTML = "Siap untuk mengonversi.";
+            convertBtn.innerText = selectedFiles.length === 1 ? "Konversi & Download (.webp)" : "Konversi & Download (.zip)";
+            previewContainer.style.display = 'block';
+            
+            previewList.innerHTML = '';
+            selectedFiles.forEach((item, index) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'preview-item';
+                    itemDiv.innerHTML = `
+                        <img src="${e.target.result}" alt="Preview">
+                        <div class="preview-info">
+                            <input type="text" class="name-input" value="${item.customName}" 
+                                   placeholder="Nama file" onchange="updateCustomName(${index}, this.value)">.webp<br>
+                            <span class="preview-size">Size Awal: ${formatBytes(item.file.size)}</span>
+                        </div>
+                        <button class="btn-remove" onclick="removeFile(${index})">Hapus</button>
+                    `;
+                    previewList.appendChild(itemDiv);
+                };
+                reader.readAsDataURL(item.file);
+            });
         } else {
             fileInfo.innerText = "";
             convertBtn.disabled = true;
+            convertBtn.innerText = "Konversi & Download";
+            previewContainer.style.display = 'none';
+            previewList.innerHTML = "";
+            statusDiv.innerHTML = "Status proses akan tampil di sini...";
         }
-    });
+    }
 
     async function convertToWebP() {
         if (selectedFiles.length === 0) return;
@@ -138,39 +305,51 @@
         let successCount = 0;
 
         for (let i = 0; i < selectedFiles.length; i++) {
-            const file = selectedFiles[i];
+            const item = selectedFiles[i];
             
             try {
-                // Memproses konversi per gambar
-                const blob = await processImage(file);
+                const { blob, size } = await processImage(item.file);
                 
-                // Ambil nama file asli tanpa ekstensi lama
-                const originalName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
-                const newFileName = `${originalName}.webp`;
+                // Gunakan nama kustom jika ada, atau fallback ke nama default
+                const baseName = item.customName || `image_${i + 1}`;
+                const newFileName = `${baseName}.webp`;
 
-                // Masukkan file ke dalam ZIP
-                zip.file(newFileName, blob);
+                if (selectedFiles.length === 1) {
+                    // Jika file tunggal, download langsung tanpa ZIP
+                    saveAs(blob, newFileName);
+                    statusDiv.innerHTML += `✅ Selesai! ${newFileName} | Awal: <b>${formatBytes(item.file.size)}</b> ➔ Akhir: <b>${formatBytes(size)}</b><br>`;
+                } else {
+                    // Jika banyak file, tambahkan ke ZIP
+                    zip.file(newFileName, blob);
+                    statusDiv.innerHTML += `✅ (${i + 1}/${selectedFiles.length}) ${newFileName} | Awal: <b>${formatBytes(item.file.size)}</b> ➔ Akhir: <b>${formatBytes(size)}</b><br>`;
+                }
                 
                 successCount++;
-                statusDiv.innerHTML += `✅ Dikonversi (${i + 1}/${selectedFiles.length}): ${newFileName}<br>`;
                 statusDiv.scrollTop = statusDiv.scrollHeight;
             } catch (error) {
-                statusDiv.innerHTML += `❌ Gagal: ${file.name} (${error})<br>`;
+                statusDiv.innerHTML += `❌ Gagal: ${item.file.name} (${error})<br>`;
             }
         }
 
-        if (successCount > 0) {
+        if (selectedFiles.length > 1 && successCount > 0) {
             statusDiv.innerHTML += "<br>📦 Mengemas seluruh gambar ke file ZIP...";
-            // Generate zip dan trigger unduhan tunggal
             zip.generateAsync({ type: "blob" }).then(function (content) {
                 saveAs(content, "hasil_converted_webp.zip");
                 statusDiv.innerHTML += "<br>✨ Selesai! File ZIP berhasil diunduh.";
-                convertBtn.disabled = false;
+                resetQueue();
             });
+        } else if (selectedFiles.length === 1 && successCount > 0) {
+            statusDiv.innerHTML += "<br>✨ File WebP berhasil diunduh secara langsung.";
+            resetQueue();
         } else {
             statusDiv.innerHTML += "<br>⚠️ Tidak ada gambar yang berhasil dikonversi.";
             convertBtn.disabled = false;
         }
+    }
+
+    function resetQueue() {
+        selectedFiles = [];
+        updateUI();
     }
 
     function processImage(file) {
@@ -190,10 +369,9 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0);
                     
-                    // Konversi ke format webp dengan kualitas 80% (0.8)
                     canvas.toBlob((blob) => {
                         if (blob) {
-                            resolve(blob);
+                            resolve({ blob, size: blob.size });
                         } else {
                             reject('Gagal mengonversi ke Blob WebP');
                         }
