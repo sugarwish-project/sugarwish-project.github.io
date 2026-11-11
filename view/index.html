@@ -7,7 +7,11 @@
     <link rel="shortcut icon" href="../asset/logo.svg" />
     <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css" />
     <link rel="stylesheet" href="../asset/styles.css" />
-    <title>SugarWish - Preview Themes</title>
+    
+    <!-- Title dan Canonical Dinamis -->
+    <title id="page-title">SugarWish - Preview Themes</title>
+    <link id="canonical-url" rel="canonical" href="" />
+
     <meta name="theme-color" content="#ffffff">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -45,6 +49,21 @@
     </div>
 
     <script>
+        // Script untuk menangani dinamis Title & Canonical
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            let namaTema = urlParams.get('temaku');
+
+            if (namaTema) {
+                namaTema = decodeURIComponent(namaTema);
+                document.getElementById('page-title').innerText = `SugarWish - ${namaTema}`;
+            }
+
+            // Set URL Canonical secara otomatis sesuai halaman yang sedang dibuka
+            document.getElementById('canonical-url').setAttribute('href', window.location.href);
+        });
+
+        // Script Popup WhatsApp
         const popupContainer = document.querySelector(".popup-container");
         const btnClosePopup = document.querySelector("#close-icon");
 
