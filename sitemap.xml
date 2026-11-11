@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://sitemaps.org">
+    <!-- Halaman Utama (Home) -->
+    <url>
+        <loc>https://sugarwish.my.id</loc>
+        <lastmod>2026-11-11</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+
+    <!-- Halaman Galeri Tema -->
+    <url>
+        <loc>https://sugarwish.my.id/#theme</loc>
+        <lastmod>2026-11-11</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+</urlset>
