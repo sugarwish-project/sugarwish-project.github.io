@@ -32,14 +32,4 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // 3. Deteksi Konsol Terbuka (Anti-DevTools)
-    (function() {
-        const threshold = 160;
-        setInterval(function() {
-            if (window.outerWidth - window.innerWidth > threshold || window.outerHeight - window.innerHeight > threshold) {
-                document.body.innerHTML = "<h2 style='text-align:center; margin-top:30vh; color:red; font-family:sans-serif;'>Akses Ditolak! Developer Tools Terdeteksi.</h2>";
-            }
-        }, 1000);
-    })();
-
 });
