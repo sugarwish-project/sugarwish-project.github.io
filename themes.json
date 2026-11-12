@@ -30,12 +30,7 @@
     "image": "/asset/poster/The Butterfly Garden.webp",
     "link": "/view/?temaku=The Butterfly Garden"
   },
-  {
-    "name": "Midnight Fireworks",
-    "price": "Rp45.000",
-    "image": "https://giftycreative.com/poster/midnight-fireworks.webp",
-    "link": "https://giftycreative.com/view/?tema=midnight-fireworks"
-  },
+
   {
     "name": "Mail Wish",
     "price": "Rp35.000",
@@ -48,6 +43,14 @@
     "image": "/asset/poster/levender wish.webp",
     "link": "/view/?temaku=levender wish"
   },
+
+    {
+    "name": "Floral Whispers",
+    "price": "Rp45.000",
+    "image": "/asset/poster/floral whispers.webp",
+    "link": "/view/?temaku=floral whispers"
+  },
+  
   {
     "name": "Brown Note",
     "price": "Rp35.000",
@@ -96,12 +99,7 @@
     "image": "https://giftycreative.com/poster/sweet-note.webp",
     "link": "https://giftycreative.com/view/?tema=sweet-note"
   },
-  {
-    "name": "Floral Whispers",
-    "price": "Rp45.000",
-    "image": "/asset/poster/floral whispers.webp",
-    "link": "/view/?temaku=floral whispers"
-  },
+
   {
     "name": "Notebook",
     "price": "Rp45.000",
