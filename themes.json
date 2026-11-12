@@ -38,10 +38,24 @@
     "link": "view/?temaku=mail wish"
   },
   {
-    "name": "Core Memories",
+    "name": "Cinnamon Paper",
     "price": "Rp35.000",
     "image": "/asset/poster/Core Memories.webp",
-    "link": "view/?temaku=Core Memories"
+    "link": "view/?temaku=Cinnamon Paper"
+  },
+
+  {
+    "name": "Cocoa Notes",
+    "price": "Rp35.000",
+    "image": "/asset/poster/Cocoa Notes.webp",
+    "link": "/view/?temaku=Cocoa Notes"
+  },
+
+  {
+    "name": "Floral Whispers",
+    "price": "Rp45.000",
+    "image": "/asset/poster/floral whispers.webp",
+    "link": "/view/?temaku=floral whispers"
   },
       
   {
@@ -50,20 +64,7 @@
     "image": "/asset/poster/levender wish.webp",
     "link": "/view/?temaku=levender wish"
   },
-
-    {
-    "name": "Floral Whispers",
-    "price": "Rp45.000",
-    "image": "/asset/poster/floral whispers.webp",
-    "link": "/view/?temaku=floral whispers"
-  },
   
-  {
-    "name": "Brown Note",
-    "price": "Rp35.000",
-    "image": "https://giftycreative.com/poster/brown-note.webp",
-    "link": "https://giftycreative.com/view/?tema=brown-note"
-  },
   {
     "name": "Cute Popup",
     "price": "Rp35.000",
