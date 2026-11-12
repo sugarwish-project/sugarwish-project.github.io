@@ -38,6 +38,13 @@
     "link": "view/?temaku=mail wish"
   },
   {
+    "name": "Core Memories",
+    "price": "Rp35.000",
+    "image": "/asset/poster/Core Memories.webp",
+    "link": "view/?temaku=Core Memories"
+  },
+      
+  {
     "name": "Levender Wish",
     "price": "Rp30.000",
     "image": "/asset/poster/levender wish.webp",
