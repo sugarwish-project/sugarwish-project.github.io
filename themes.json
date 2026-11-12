@@ -1,5 +1,11 @@
 [
       {
+    "name": "Enchanted Islamic Garden",
+    "price": "Rp50.000",
+    "image": "asset/poster/Enchanted Islamic Garden.webp",
+    "link": "/view/?temaku=Enchanted Islamic Garden"
+  }, 
+      {
     "name": "Islamic Moonlight Romance",
     "price": "Rp50.000",
     "image": "asset/poster/Islamic Moonlight Romance.webp",
