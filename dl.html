@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator Area Download GitHub (+ Download Semua)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .wrapper { grid-template-columns: 1fr; }
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        h2 { margin-top: 0; font-size: 18px; color: #1a1a1a; }
+        p { font-size: 13px; color: #666; }
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-family: monospace;
+            font-size: 13px;
+            resize: vertical;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+        button {
+            flex: 1;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            transition: opacity 0.2s;
+        }
+        button:hover { opacity: 0.9; }
+        .btn-generate { background-color: #0969da; color: white; }
+        .btn-copy { background-color: #2ea44f; color: white; }
+        
+        /* Tombol Download Semua */
+        .btn-download-all {
+            width: 100%;
+            background-color: #8250df;
+            color: white;
+            margin-bottom: 12px;
+            padding: 10px;
+            font-size: 14px;
+        }
+        .btn-download-all:disabled {
+            background-color: #a589db;
+            cursor: not-allowed;
+        }
+
+        /* Style untuk Preview Hasil */
+        .preview-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8f9fa;
+            border: 1px solid #e1e4e8;
+            padding: 10px 14px;
+            border-radius: 6px;
+        }
+        .file-name {
+            font-size: 13px;
+            font-weight: 600;
+            word-break: break-all;
+            margin-right: 10px;
+        }
+        .btn-dl {
+            background-color: #2ea44f;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+            cursor: pointer;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <!-- KOLOM KIRI: INPUT LINK -->
+    <div class="card">
+        <h2>1. Masukkan Daftar Link GitHub</h2>
+        <p>Tempel link (otomatis mengubah %20 menjadi spasi):</p>
+        
+        <textarea id="inputLinks" placeholder="https://dekatutorial.github.io/crd/lv.svg&#10;https://dekatutorial.github.io/crd/logo%20baru.svg">https://dekatutorial.github.io/crd/lv.svg
+https://dekatutorial.github.io/crd/logo%20baru.svg</textarea>
+        
+        <div class="btn-group">
+            <button class="btn-generate" onclick="generateDownloadArea()">Generate Tombol</button>
+            <button class="btn-copy" onclick="copyHTMLCode()">Salin Kode HTML</button>
+        </div>
+        <p id="notif" style="color: #2ea44f; font-weight: bold; display: none; margin-top: 8px;">✅ Kode HTML berhasil disalin!</p>
+    </div>
+
+    <!-- KOLOM KANAN: HASIL AREA DOWNLOAD -->
+    <div class="card">
+        <h2>2. Hasil Area Download</h2>
+        <p>Download semua sekaligus atau pilih satu per satu:</p>
+        
+        <!-- Tombol Download Semua -->
+        <button id="btnDownloadAll" class="btn-download-all" onclick="downloadAllFiles()">⬇️ Download Semua File</button>
+        
+        <div id="previewArea" class="preview-list">
+            <!-- Hasil tombol download muncul otomatis di sini -->
+        </div>
+    </div>
+</div>
+
+<!-- Area tersembunyi untuk menyimpan kode HTML hasil generate -->
+<textarea id="generatedCode" style="display:none;"></textarea>
+
+<script>
+    let currentFileList = [];
+
+    // Fungsi download tunggal
+    async function forceDownload(url, filename) {
+        const cleanUrl = url.replace(/%20/g, ' ');
+        try {
+            const response = await fetch(cleanUrl);
+            if (!response.ok) throw new Error('Gagal fetch');
+            const blob = await response.blob();
+            const blobUrl = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = blobUrl;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(blobUrl);
+            a.remove();
+        } catch (e) {
+            const a = document.createElement('a');
+            a.href = cleanUrl;
+            a.download = filename;
+            a.target = '_blank';
+            a.click();
+        }
+    }
+
+    // Fungsi Download Semua dengan jeda aman agar tidak diblokir browser
+    async function downloadAllFiles() {
+        if (currentFileList.length === 0) return;
+
+        const btnAll = document.getElementById('btnDownloadAll');
+        const originalText = btnAll.innerText;
+        btnAll.disabled = true;
+
+        for (let i = 0; i < currentFileList.length; i++) {
+            const item = currentFileList[i];
+            btnAll.innerText = `⏳ Mengunduh (${i + 1}/${currentFileList.length}): ${item.fileName}...`;
+            await forceDownload(item.cleanLink, item.fileName);
+            
+            // Jeda 600ms antar file agar browser mengizinkan multiple download
+            if (i < currentFileList.length - 1) {
+                await new Promise(resolve => setTimeout(resolve, 600));
+            }
+        }
+
+        btnAll.innerText = '✅ Selesai Mengunduh Semua!';
+        setTimeout(() => {
+            btnAll.innerText = originalText;
+            btnAll.disabled = false;
+        }, 2500);
+    }
+
+    function generateDownloadArea() {
+        const input = document.getElementById('inputLinks').value;
+        const previewArea = document.getElementById('previewArea');
+        const generatedCode = document.getElementById('generatedCode');
+        
+        const links = input.split('\n').map(l => l.trim()).filter(l => l !== '');
+        
+        previewArea.innerHTML = '';
+        currentFileList = [];
+
+        // Awal kode HTML hasil generate (termasuk tombol Download Semua + scriptnya)
+        let htmlOutput = `<div id="gh-download-box" style="font-family: sans-serif; max-width: 450px;">\n`;
+        htmlOutput += `  <button onclick="ghDownloadAll()" style="width:100%; background:#8250df; color:#fff; border:none; padding:10px; border-radius:6px; font-weight:bold; cursor:pointer; margin-bottom:12px;">⬇️ Download Semua File (${links.length})</button>\n`;
+
+        links.forEach(rawLink => {
+            let rawFileName = rawLink.substring(rawLink.lastIndexOf('/') + 1) || 'file_download';
+            let fileName = rawFileName;
+            try {
+                fileName = decodeURIComponent(rawFileName);
+            } catch (e) {}
+            fileName = fileName.replace(/%20/g, ' ');
+            
+            const cleanLink = rawLink.replace(/%20/g, ' ');
+            currentFileList.push({ cleanLink, fileName });
+
+            // Buat tampilan di Preview
+            const item = document.createElement('div');
+            item.className = 'file-item';
+            item.innerHTML = `
+                <span class="file-name">📄 ${fileName}</span>
+                <button class="btn-dl" onclick="forceDownload('${cleanLink.replace(/'/g, "\\'")}', '${fileName.replace(/'/g, "\\'")}')">Download</button>
+            `;
+            previewArea.appendChild(item);
+
+            // Susun item pada kode HTML hasil generate
+            htmlOutput += `  <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border:1px solid #ddd; margin-bottom:8px; border-radius:6px;">\n`;
+            htmlOutput += `    <span>${fileName}</span>\n`;
+            htmlOutput += `    <a href="${cleanLink}" download="${fileName}" class="gh-dl-link" style="background:#2ea44f; color:#fff; padding:6px 12px; text-decoration:none; border-radius:4px; font-size:13px;">Download</a>\n`;
+            htmlOutput += `  </div>\n`;
+        });
+
+        // Tambahkan fungsi JS agar tombol "Download Semua" di kode hasil salinan juga berfungsi
+        htmlOutput += `  <script>\n`;
+        htmlOutput += `    async function ghDownloadAll() {\n`;
+        htmlOutput += `      const links = document.querySelectorAll('#gh-download-box .gh-dl-link');\n`;
+        htmlOutput += `      for (let i = 0; i < links.length; i++) {\n`;
+        htmlOutput += `        links[i].click();\n`;
+        htmlOutput += `        await new Promise(r => setTimeout(r, 600));\n`;
+        htmlOutput += `      }\n`;
+        htmlOutput += `    }\n`;
+        htmlOutput += `  <\/script>\n`;
+        htmlOutput += `</div>`;
+
+        generatedCode.value = htmlOutput;
+        document.getElementById('btnDownloadAll').innerText = `⬇️ Download Semua File (${links.length})`;
+    }
+
+    function copyHTMLCode() {
+        generateDownloadArea();
+        const codeBox = document.getElementById('generatedCode');
+        codeBox.style.display = 'block';
+        codeBox.select();
+        document.execCommand('copy');
+        codeBox.style.display = 'none';
+
+        const notif = document.getElementById('notif');
+        notif.style.display = 'block';
+        setTimeout(() => notif.style.display = 'none', 2500);
+    }
+
+    window.onload = generateDownloadArea;
+</script>
+
+</body>
+</html>
